@@ -1,0 +1,99 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:StrBits"
+             x:Class="StrBits.App" RequestedThemeVariant="Default">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="/Styles/Palette.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+  <Application.Styles>
+    <FluentTheme />
+    <Style Selector="Window">
+      <Setter Property="FontFamily" Value="Segoe UI, Inter, sans-serif" />
+      <Setter Property="Background" Value="{DynamicResource WindowBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="20" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="{DynamicResource MutedBrush}" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="TextBlock.label">
+      <Setter Property="Foreground" Value="{DynamicResource MutedBrush}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="LetterSpacing" Value="1.3" />
+    </Style>
+    <Style Selector="TextBlock.metric">
+      <Setter Property="FontSize" Value="28" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,6,0,4" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="Background" Value="{DynamicResource InputBrush}" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="Background" Value="{DynamicResource InputBrush}" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="Padding" Value="14,9" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{DynamicResource AccentFillBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Border.chrome">
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+    </Style>
+    <Style Selector="Border.logo">
+      <Setter Property="Background" Value="{DynamicResource AccentFillBrush}" />
+    </Style>
+    <Style Selector="TextBlock.logo">
+      <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
+    </Style>
+    <Style Selector="TextBlock.accent">
+      <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+    </Style>
+    <Style Selector="TextBox.binary">
+      <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+    </Style>
+    <Style Selector="TextBlock.secondary">
+      <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}" />
+    </Style>
+    <Style Selector="TextBox.hex">
+      <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}" />
+    </Style>
+    <Style Selector="TextBox.base64">
+      <Setter Property="Foreground" Value="{DynamicResource TertiaryTextBrush}" />
+    </Style>
+    <Style Selector="Border.error">
+      <Setter Property="Background" Value="{DynamicResource ErrorSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ErrorBorderBrush}" />
+    </Style>
+    <Style Selector="TextBlock.error">
+      <Setter Property="Foreground" Value="{DynamicResource ErrorTextBrush}" />
+    </Style>
+    <Style Selector="ProgressBar.balance">
+      <Setter Property="Foreground" Value="{DynamicResource AccentFillBrush}" />
+      <Setter Property="Background" Value="{DynamicResource SecondaryFillBrush}" />
+    </Style>
+    <Style Selector="local|ByteHistogram">
+      <Setter Property="BarBrush" Value="{DynamicResource AccentFillBrush}" />
+      <Setter Property="GridBrush" Value="{DynamicResource BorderBrush}" />
+    </Style>
+  </Application.Styles>
+</Application>

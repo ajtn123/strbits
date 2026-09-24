@@ -1,0 +1,168 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:StrBits"
+        x:Class="StrBits.MainWindow" x:DataType="local:MainViewModel"
+        Title="StrBits — Binary Inspector" Width="1240" Height="900"
+        MinWidth="1000" MinHeight="680" WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Border Classes="chrome" BorderThickness="0,0,0,1" Padding="28,20">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Border Classes="logo" CornerRadius="10" Width="46" Height="46" Margin="0,0,14,0">
+          <TextBlock Classes="logo" Text="01" FontFamily="Cascadia Code, Consolas, monospace" FontSize="21"
+                     FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+        <TextBlock Grid.Column="1" Text="StrBits" FontSize="23" FontWeight="SemiBold" VerticalAlignment="Center" />
+        <Button Grid.Column="2" Content="Export report ↗" VerticalAlignment="Center" Click="ExportReport"
+                IsEnabled="{Binding IsValid}" ToolTip.Tip="Save the input, full output, and statistics as a text file" />
+      </Grid>
+    </Border>
+
+    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="28,22" Spacing="18">
+        <Grid ColumnDefinitions="340,18,*">
+          <Border Classes="card">
+            <StackPanel Spacing="13">
+              <TextBlock Classes="label" Text="01  /  ORIGINAL DATA" />
+              <StackPanel Spacing="6">
+                <TextBlock Text="Data type" FontSize="12" />
+                <ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType, Mode=TwoWay}"
+                          AutomationProperties.Name="Data type" ToolTip.Tip="{Binding TypeDescription}" />
+              </StackPanel>
+              <Grid ColumnDefinitions="*,12,*">
+                <StackPanel Spacing="6">
+                  <TextBlock Text="Text encoding" FontSize="12" />
+                  <ComboBox ItemsSource="{Binding Encodings}" SelectedIndex="{Binding EncodingIndex, Mode=TwoWay}"
+                            IsEnabled="{Binding IsText}" AutomationProperties.Name="Text encoding" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="6">
+                  <TextBlock Text="Byte order" FontSize="12" />
+                  <ComboBox ItemsSource="{Binding ByteOrders}" SelectedIndex="{Binding ByteOrderIndex, Mode=TwoWay}"
+                            IsEnabled="{Binding HasByteOrder}" AutomationProperties.Name="Byte order" />
+                </StackPanel>
+              </Grid>
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Value" VerticalAlignment="Center" FontSize="12" />
+                <Button Grid.Column="1" Content="Use example" Padding="9,4" FontSize="11" Click="LoadExample" />
+              </Grid>
+              <TextBox x:Name="InputBox" Text="{Binding Input, Mode=TwoWay}" AcceptsReturn="True"
+                       TextWrapping="Wrap" Height="124" MaxLength="32768" VerticalContentAlignment="Top"
+                       FontFamily="Cascadia Code, Consolas, monospace" FontSize="15"
+                       PlaceholderText="Enter a value…" AutomationProperties.Name="Original value" />
+              <TextBlock Classes="muted" Text="{Binding InputCount}" FontSize="10" />
+              <Border Classes="error" BorderThickness="1" CornerRadius="6"
+                      Padding="10" IsVisible="{Binding HasError}">
+                <TextBlock Classes="error" Text="{Binding Error}" TextWrapping="Wrap" FontSize="12" />
+              </Border>
+            </StackPanel>
+          </Border>
+
+          <Border Grid.Column="2" Classes="card">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+              <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,7">
+                <TextBlock Classes="label" Text="02  /  BYTE REPRESENTATION" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="primary" Content="Copy output" Click="CopyOutput" IsEnabled="{Binding IsValid}" />
+              </Grid>
+              <TextBlock Grid.Row="1" Classes="muted" Text="{Binding LayoutCaption}" Margin="0,0,0,8" />
+              <TabControl Grid.Row="2" SelectedIndex="{Binding OutputTab, Mode=TwoWay}" MinHeight="270">
+                <TabItem Header="Binary">
+                  <Grid RowDefinitions="Auto,*">
+                    <CheckBox Content="Group into nibbles (4 bits)" IsChecked="{Binding GroupNibbles, Mode=TwoWay}" FontSize="12" />
+                    <TextBox Grid.Row="1" Classes="binary" Text="{Binding BinaryPreview, Mode=OneWay}" IsReadOnly="True" AcceptsReturn="True"
+                             FontFamily="Cascadia Code, Consolas, monospace" FontSize="13"
+                             Height="208" VerticalContentAlignment="Top" TextWrapping="NoWrap"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             AutomationProperties.Name="Binary output" />
+                  </Grid>
+                </TabItem>
+                <TabItem Header="Hexadecimal">
+                  <TextBox Classes="hex" Text="{Binding HexPreview, Mode=OneWay}" IsReadOnly="True" AcceptsReturn="True"
+                           FontFamily="Cascadia Code, Consolas, monospace" FontSize="14"
+                           Height="248" VerticalContentAlignment="Top" TextWrapping="NoWrap"
+                           ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                           AutomationProperties.Name="Hexadecimal output" />
+                </TabItem>
+                <TabItem Header="Base64">
+                  <TextBox Classes="base64" Text="{Binding Base64Preview, Mode=OneWay}" IsReadOnly="True" AcceptsReturn="True"
+                           FontFamily="Cascadia Code, Consolas, monospace" FontSize="14"
+                           Height="248" VerticalContentAlignment="Top" TextWrapping="Wrap"
+                           ScrollViewer.VerticalScrollBarVisibility="Auto" AutomationProperties.Name="Base64 output" />
+                </TabItem>
+              </TabControl>
+              <TextBlock Grid.Row="3" Classes="muted" Text="{Binding PreviewCaption}" TextWrapping="Wrap" Margin="0,12,0,0" FontSize="11" />
+            </Grid>
+          </Border>
+        </Grid>
+
+        <Grid ColumnDefinitions="*,12,*,12,*,12,*">
+          <Border Classes="card" Padding="16">
+            <StackPanel>
+              <TextBlock Classes="label" Text="ORIGINAL TEXT" />
+              <TextBlock Classes="metric" Text="{Binding OriginalSize}" />
+              <TextBlock Classes="muted" Text="{Binding OriginalDetail}" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Classes="card" Padding="16">
+            <StackPanel>
+              <TextBlock Classes="label" Text="RAW BINARY STORAGE" />
+              <TextBlock Classes="metric accent" Text="{Binding PayloadSize}" />
+              <TextBlock Classes="muted" Text="{Binding PayloadDetail}" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="4" Classes="card" Padding="16">
+            <StackPanel>
+              <TextBlock Classes="label" Text="BINARY AS TEXT" />
+              <TextBlock Classes="metric" Text="{Binding BinaryTextSize}" />
+              <TextBlock Classes="muted" Text="{Binding BinaryTextDetail}" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="6" Classes="card" Padding="16">
+            <StackPanel>
+              <TextBlock Classes="label" Text="BYTE ENTROPY" />
+              <TextBlock Classes="metric" Text="{Binding Entropy}" />
+              <TextBlock Classes="muted" Text="{Binding EntropyDetail}" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <Grid ColumnDefinitions="*,18,*">
+          <Border Classes="card">
+            <StackPanel Spacing="10">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="label" Text="BIT BALANCE" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                  <TextBlock Classes="accent" Text="1" />
+                  <TextBlock Text="{Binding Ones}" />
+                  <TextBlock Classes="muted" Text="/" />
+                  <TextBlock Classes="secondary" Text="0" />
+                  <TextBlock Text="{Binding Zeros}" />
+                </StackPanel>
+              </Grid>
+              <ProgressBar Classes="balance" Minimum="0" Maximum="100" Value="{Binding OnesPercent}" Height="7"
+                           IsVisible="{Binding IsValid}" />
+              <TextBlock Classes="muted" Text="{Binding BalanceCaption}" />
+              <TextBlock Classes="label" Text="BYTE FREQUENCY" Margin="0,4,0,0" />
+              <local:ByteHistogram Counts="{Binding Histogram}" Height="55"
+                                   ToolTip.Tip="Frequency of each byte value; bar heights are relative to the most frequent byte." />
+              <Grid ColumnDefinitions="*,*,*">
+                <TextBlock Classes="muted" Text="00" FontSize="10" />
+                <TextBlock Grid.Column="1" Classes="muted" Text="7F" FontSize="10" HorizontalAlignment="Center" />
+                <TextBlock Grid.Column="2" Classes="muted" Text="FF" FontSize="10" HorizontalAlignment="Right" />
+              </Grid>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Classes="card">
+            <StackPanel Spacing="10">
+              <TextBlock Classes="label" Text="STORED VALUE" />
+              <SelectableTextBlock Text="{Binding StoredValue}" FontFamily="Cascadia Code, Consolas, monospace"
+                                   TextWrapping="Wrap" MaxHeight="65" />
+              <TextBlock Classes="muted" Text="{Binding Interpretation}" TextWrapping="Wrap" IsVisible="{Binding ShowInterpretation}" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+    <Border Grid.Row="2" Classes="chrome" BorderThickness="0,1,0,0" Padding="28,10" IsVisible="{Binding HasStatus}">
+      <TextBlock Classes="muted" Text="{Binding Status}" FontSize="11" />
+    </Border>
+  </Grid>
+</Window>

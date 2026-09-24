@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/StrBits.Core/StrBits.Core.csproj" />
+    <Project Path="src/StrBits/StrBits.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/StrBits.Tests/StrBits.Tests.csproj" />
+  </Folder>
+</Solution>
